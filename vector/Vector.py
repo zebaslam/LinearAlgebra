@@ -1,14 +1,16 @@
 import math
+from decimal import Decimal, getcontext
 
 
 class Vector(object):
+    getcontext().prec = 3
     CANNOT_NORMALIZE_ZERO_VECTOR_NSG = 'Cannot normalize the zero vector'
 
     def __init__(self, coordinates):
         try:
             if not coordinates:
                 raise ValueError
-            self.coordinates = tuple(coordinates)
+            self.coordinates = tuple([Decimal(x) for x in coordinates])
             self.dimension = len(coordinates)
 
         except ValueError:
@@ -44,7 +46,7 @@ class Vector(object):
 
     def magnitude(self):
         res = [x ** 2 for x in self.coordinates]
-        return (sum(res)) ** (1 / 2.0)
+        return (sum(res)) ** (Decimal(1) / Decimal(2.0))
 
     def normalize(self):
         try:
@@ -56,6 +58,17 @@ class Vector(object):
     def dotProduct(self, v):
         res = [x * y for x, y in zip(self.coordinates, v.coordinates)]
         return sum(res)
+
+    def is_orthogonal(self, v):
+        dp = self.dotProduct(v)
+        if dp == 0:
+            return True
+        else:
+            return False
+
+    def is_parallel(self, v):
+        res = set([x / y for x, y in zip(self.coordinates, v.coordinates)])
+        return len(set(res)) <= 1
 
     def vector_angle(self, v):
         try:
