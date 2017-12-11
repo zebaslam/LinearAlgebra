@@ -3,7 +3,7 @@ from decimal import Decimal, getcontext
 
 
 class Vector(object):
-    getcontext().prec = 3
+    getcontext().prec = 6
     CANNOT_NORMALIZE_ZERO_VECTOR_NSG = 'Cannot normalize the zero vector'
 
     def __init__(self, coordinates):
@@ -46,11 +46,11 @@ class Vector(object):
 
     def magnitude(self):
         res = [x ** 2 for x in self.coordinates]
-        return (sum(res)) ** (Decimal(1) / Decimal(2.0))
+        return (sum(res)) ** (Decimal(1) / 2)
 
     def normalize(self):
         try:
-            scale = 1. / self.magnitude()
+            scale = 1 / self.magnitude()
             return self.scalar(scale)
         except ZeroDivisionError:
             raise Exception(self.CANNOT_NORMALIZE_ZERO_VECTOR_NSG)
@@ -69,6 +69,11 @@ class Vector(object):
     def is_parallel(self, v):
         res = set([x / y for x, y in zip(self.coordinates, v.coordinates)])
         return len(set(res)) <= 1
+
+    def projection(self, v):
+        u = v.normalize()
+        product = self.dotProduct(u)
+        return u.scalar(product)
 
     def vector_angle(self, v):
         try:
