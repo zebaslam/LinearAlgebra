@@ -75,6 +75,10 @@ class Vector(object):
         product = self.dotProduct(u)
         return u.scalar(product)
 
+    def orthogonal_to(self, v):
+        projection = self.projection(v)
+        return self.subtract(projection)
+
     def vector_angle(self, v):
         try:
             dp = self.dotProduct(v)
